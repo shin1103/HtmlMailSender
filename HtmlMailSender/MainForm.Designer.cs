@@ -76,17 +76,17 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(792, 385);
+            this.tabControl1.Size = new System.Drawing.Size(792, 392);
             this.tabControl1.TabIndex = 0;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // tabSource
             // 
             this.tabSource.Controls.Add(this.txtSource);
-            this.tabSource.Location = new System.Drawing.Point(4, 21);
+            this.tabSource.Location = new System.Drawing.Point(4, 22);
             this.tabSource.Name = "tabSource";
             this.tabSource.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSource.Size = new System.Drawing.Size(784, 360);
+            this.tabSource.Size = new System.Drawing.Size(784, 366);
             this.tabSource.TabIndex = 0;
             this.tabSource.Text = "ソース";
             this.tabSource.UseVisualStyleBackColor = true;
@@ -99,7 +99,7 @@
             this.txtSource.Multiline = true;
             this.txtSource.Name = "txtSource";
             this.txtSource.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtSource.Size = new System.Drawing.Size(778, 354);
+            this.txtSource.Size = new System.Drawing.Size(778, 360);
             this.txtSource.TabIndex = 0;
             this.txtSource.WordWrap = false;
             this.txtSource.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSource_KeyUp);
@@ -107,10 +107,10 @@
             // tabHTML
             // 
             this.tabHTML.Controls.Add(this.webBrowser1);
-            this.tabHTML.Location = new System.Drawing.Point(4, 21);
+            this.tabHTML.Location = new System.Drawing.Point(4, 22);
             this.tabHTML.Name = "tabHTML";
             this.tabHTML.Padding = new System.Windows.Forms.Padding(3);
-            this.tabHTML.Size = new System.Drawing.Size(784, 360);
+            this.tabHTML.Size = new System.Drawing.Size(784, 359);
             this.tabHTML.TabIndex = 1;
             this.tabHTML.Text = "HTML";
             this.tabHTML.UseVisualStyleBackColor = true;
@@ -236,7 +236,7 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(792, 542);
+            this.splitContainer1.Size = new System.Drawing.Size(792, 549);
             this.splitContainer1.SplitterDistance = 153;
             this.splitContainer1.TabIndex = 1;
             // 
@@ -340,7 +340,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(792, 566);
+            this.ClientSize = new System.Drawing.Size(792, 573);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStripMain);
             this.MinimumSize = new System.Drawing.Size(800, 600);

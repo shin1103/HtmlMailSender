@@ -106,6 +106,8 @@ namespace SHashiba.HtmlMailSender
                     //メールオブジェクトの作成
                     TKMP.Writer.MailWriter mail = new TKMP.Writer.MailWriter();
 
+                    //TKMP.Writer.TextPart part1 = new TKMP.Writer.TextPart("メールの本文です。");
+
                     //SMTPサーバーの問い合わせ用のアドレスをセット
                     mail.FromAddress = accountRow.SmtpSenderMail;
                     mail.ToAddressList.Add(adder.MailAddress);
@@ -163,9 +165,16 @@ namespace SHashiba.HtmlMailSender
         /// <param name="mail">本文を追加したいメールオブジェクト</param>
         private void CreateMailBody(TKMP.Writer.MailWriter mail)
         {
+            TKMP.Writer.IPart part1 = new TKMP.Writer.TextPart("Please Show This Mail By Mailer Can Show Html. ", TKMP.Writer.Charsets.JIS);
+            part1.Headers.Add("Content-Type", @"text/plain; charset=""ISO-2022-JP""");
+
             TKMP.Writer.IPart part = new TKMP.Writer.TextPart(this._mailBody, TKMP.Writer.Charsets.JIS);
-            part.Headers.Add("Content-Type", "text/html");
-            mail.MainPart = part;
+            part.Headers.Add("Content-Type", @"text/html; charset=""ISO-2022-JP""");
+            //mail.MainPart = part;
+            TKMP.Writer.MultiPart mainpart = new TKMP.Writer.MultiPart(part1, part);
+            mainpart.Headers.Add("Content-Type", mainpart.Headers["Content-Type"].Replace("mixed", "alternative"));
+            mail.MainPart = mainpart;
+
         }
 
         /// <summary>
@@ -178,6 +187,7 @@ namespace SHashiba.HtmlMailSender
             //ヘッダ情報を追加します
             mail.Headers.Add("From", string.Format("{0} <{1}>", accountRow.SmtpSenderName, accountRow.SmtpSenderMail)); //「差出人」
             mail.Headers.Add("Subject", this._mailSubject); //メールの件名
+
         }
 
         /// <summary>
