@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Address_DS" targetNamespace="http://tempuri.org/Address_DS.xsd" xmlns:mstns="http://tempuri.org/Address_DS.xsd" xmlns="http://tempuri.org/Address_DS.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+        </Connections>
+        <Tables>
+        </Tables>
+        <Sources>
+        </Sources>
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="Address_DS" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="Address_DS" msprop:Generator_DataSetName="Address_DS">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Address" msprop:Generator_UserTableName="Address" msprop:Generator_RowDeletedName="AddressRowDeleted" msprop:Generator_TableClassName="AddressDataTable" msprop:Generator_RowChangedName="AddressRowChanged" msprop:Generator_RowClassName="AddressRow" msprop:Generator_RowChangingName="AddressRowChanging" msprop:Generator_RowEvArgName="AddressRowChangeEvent" msprop:Generator_RowEvHandlerName="AddressRowChangeEventHandler" msprop:Generator_TablePropName="Address" msprop:Generator_TableVarName="tableAddress" msprop:Generator_RowDeletingName="AddressRowDeleting">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="MailAddress" msprop:Generator_UserColumnName="MailAddress" msprop:Generator_ColumnPropNameInRow="MailAddress" msprop:Generator_ColumnVarNameInTable="columnMailAddress" msprop:Generator_ColumnPropNameInTable="MailAddressColumn" type="xs:string" />
+              <xs:element name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:string" minOccurs="0" />
+              <xs:element name="SendType" msprop:Generator_UserColumnName="SendType" msprop:Generator_ColumnPropNameInRow="SendType" msprop:Generator_ColumnVarNameInTable="columnSendType" msprop:Generator_ColumnPropNameInTable="SendTypeColumn" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="PrimaryKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:Address" />
+      <xs:field xpath="mstns:MailAddress" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

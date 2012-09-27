@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9691DE1C-5BD1-4480-87F3-FD1E467C4FD6}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SHashiba.HtmlMailSender</RootNamespace>
+    <AssemblyName>HtmlMailSender</AssemblyName>
+    <ApplicationIcon>Data\icon2.ico</ApplicationIcon>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Bravo2.Excel, Version=2.0.1.0, Culture=neutral" />
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TKMP, Version=2.4.17.2, Culture=neutral, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountSettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AccountSettingForm.Designer.cs">
+      <DependentUpon>AccountSettingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AddressDirectInputForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddressDirectInputForm.Designer.cs">
+      <DependentUpon>AddressDirectInputForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AddressSelectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddressSelectForm.Designer.cs">
+      <DependentUpon>AddressSelectForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ColumnSelectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ColumnSelectForm.Designer.cs">
+      <DependentUpon>ColumnSelectForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CryptographyUtil.cs" />
+    <Compile Include="DataSet\Account_DS.cs">
+      <DependentUpon>Account_DS.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataSet\Account_DS.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Account_DS.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="DataSet\Address_DS.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Address_DS.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="ErrorListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorListForm.Designer.cs">
+      <DependentUpon>ErrorListForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LogWriter.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs">
+    </Compile>
+    <Compile Include="ProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProgressForm.Designer.cs">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AccountSettingForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AccountSettingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddressDirectInputForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AddressDirectInputForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddressSelectForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AddressSelectForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColumnSelectForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ColumnSelectForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ErrorListForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ErrorListForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TestForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="DataSet\Account_DS.xsc">
+      <DependentUpon>Account_DS.xsd</DependentUpon>
+    </None>
+    <None Include="DataSet\Account_DS.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>Account_DS.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="DataSet\Account_DS.xss">
+      <DependentUpon>Account_DS.xsd</DependentUpon>
+    </None>
+    <None Include="DataSet\Address_DS.xsc">
+      <DependentUpon>Address_DS.xsd</DependentUpon>
+    </None>
+    <None Include="DataSet\Address_DS.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>Address_DS.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="DataSet\Address_DS.xss">
+      <DependentUpon>Address_DS.xsd</DependentUpon>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="TestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestForm.Designer.cs">
+      <DependentUpon>TestForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data\icon2.ico" />
+    <EmbeddedResource Include="ProgressForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Content Include="DLL\Bravo2.Excel.dll" />
+    <Content Include="DLL\TKMP.dll" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
