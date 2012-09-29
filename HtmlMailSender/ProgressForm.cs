@@ -23,7 +23,7 @@ namespace SHashiba.HtmlMailSender
         private string _mailBody = null;
         private LogWriter _writer = MyAppContext._writer;
 
-        private bool _enableClose = false;
+        private bool _isAccountError = false;
 
         public ProgressForm(Account_DS.AccountRow accountRow, Address_DS addressDs, string mailSubject, string mailBody)
         {
@@ -49,30 +49,12 @@ namespace SHashiba.HtmlMailSender
                 return;
             }
 
-            //閉じるのが許可されていなければ、閉じるのをキャンセルする。
-            if (this._enableClose == false)
-            {
-                e.Cancel = true;
-            }
         }
 
         private void _worker_DoWork(object sender, DoWorkEventArgs e)
         {
                         //送信アカウント情報を取得
             Account_DS.AccountRow accountRow = e.Argument as Account_DS.AccountRow;
-
-            ////テスト用に作成
-            //int count = 0;
-            //foreach (Address_DS.AddressRow adder in this._addressDs.Address)
-            //{
-            //    count++;
-            //    System.Threading.Thread.Sleep(1000);
-            //    this._writer.Write(string.Format("{0}にメールを送信しました。", adder.MailAddress));
-            //    double percentage = ((double)count / (double)this._addressDs.Address.Count) * 100;
-            //    this._worker.ReportProgress((int)System.Math.Ceiling(percentage));
-            //}
-
-            //return;
 
             //POP  Before SMTPの場合
             if (accountRow.UsePopBeforeSmtp == true)
@@ -86,7 +68,8 @@ namespace SHashiba.HtmlMailSender
             //接続に失敗したら、終了。
             if (!smtp.Connect())
             {
-                System.Windows.Forms.MessageBox.Show("インターネット接続に失敗しました。");
+                System.Windows.Forms.MessageBox.Show("インターネット接続に失敗しました。インターネットに接続していないか、アカウント情報が間違っています。");
+                this._isAccountError = true;
                 return;
             }
 
@@ -98,15 +81,15 @@ namespace SHashiba.HtmlMailSender
                 smtp.MessageSend += new TKMP.Net.MessageSendHandler(smtp_MessageSend);
 
                 //あて先アドレスをセット
-                int count = 0;
+                int totalCount = 0;
+                int clusterCount = 0;
                 foreach (Address_DS.AddressRow adder in this._addressDs.Address)
                 {
-                    count++;
+                    clusterCount ++;
+                    totalCount++;
 
                     //メールオブジェクトの作成
                     TKMP.Writer.MailWriter mail = new TKMP.Writer.MailWriter();
-
-                    //TKMP.Writer.TextPart part1 = new TKMP.Writer.TextPart("メールの本文です。");
 
                     //SMTPサーバーの問い合わせ用のアドレスをセット
                     mail.FromAddress = accountRow.SmtpSenderMail;
@@ -124,8 +107,23 @@ namespace SHashiba.HtmlMailSender
                     smtp.SendMail(mail);
 
                     this._writer.Write(string.Format("{0}にメールを送信しました。", adder.MailAddress));
-                    double percentage = ((double)count / (double)this._addressDs.Address.Count) * 100;
-                    this._worker.ReportProgress((int)System.Math.Ceiling(percentage));
+                    double percentage = ((double)totalCount / (double)this._addressDs.Address.Count) * 100;
+
+                    if (clusterCount == HtmlMailSender.Properties.Settings.Default.ClusterSize)
+                    {
+                        //クラスタサイズに達した場合はいったんとめる。
+                        this._worker.ReportProgress((int)System.Math.Ceiling(percentage), new object[] { totalCount, true });
+                        this._writer.Write(string.Format("インターバルで停止中です。"));
+                        this._writer.Flush();
+                        System.Threading.Thread.Sleep((int)(HtmlMailSender.Properties.Settings.Default.Interval * 1000));
+                        clusterCount = 0;
+                    }
+                    else
+                    {
+                        //それ以外は情報のみを返す。
+                        this._worker.ReportProgress((int)System.Math.Ceiling(percentage), new object[] { totalCount, false });
+                    }
+
                 }
             }
             finally
@@ -138,6 +136,21 @@ namespace SHashiba.HtmlMailSender
 
         private void _worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
+            if (e.UserState != null)
+            {
+                //全体とその件数を表示。クラスター間隔により停止している場合はその旨を表示
+                object[] o = (object[])e.UserState;
+                if ((bool)o[1] == false)
+                {
+                    this.lblMessage.Text = string.Format("{0}/{1}を送信", o[0],this._addressDs.Address.Count);
+                }
+                else
+                {
+                    this.lblMessage.Text = string.Format("{0}/{1}を送信(クラスタ間隔に達したためいったん停止中)", o[0], this._addressDs.Address.Count);
+                }
+            }
+            
+            //プログレスバーに進捗状況を表示
             this._progressBar.Value = e.ProgressPercentage;
         }
 
@@ -154,8 +167,14 @@ namespace SHashiba.HtmlMailSender
 
             this._writer.Flush();
 
+            if (this._isAccountError)
+            {
+                this._isAccountError = false;
+                this.Close();
+                return;
+            }
+
             MessageBox.Show(this, "メッセージの送信が完了しました。", "完了");
-            this._enableClose = true;
             this.Close();
         }
 
@@ -165,7 +184,7 @@ namespace SHashiba.HtmlMailSender
         /// <param name="mail">本文を追加したいメールオブジェクト</param>
         private void CreateMailBody(TKMP.Writer.MailWriter mail)
         {
-            TKMP.Writer.IPart part1 = new TKMP.Writer.TextPart("Please Show This Mail By Mailer Can Show Html. ", TKMP.Writer.Charsets.JIS);
+            TKMP.Writer.IPart part1 = new TKMP.Writer.TextPart("このメールはHTML形式表示可能なメーラーでご覧ください。", TKMP.Writer.Charsets.JIS);
             part1.Headers.Add("Content-Type", @"text/plain; charset=""ISO-2022-JP""");
 
             TKMP.Writer.IPart part = new TKMP.Writer.TextPart(this._mailBody, TKMP.Writer.Charsets.JIS);

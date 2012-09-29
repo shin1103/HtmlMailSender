@@ -110,7 +110,7 @@
             this.tabHTML.Location = new System.Drawing.Point(4, 22);
             this.tabHTML.Name = "tabHTML";
             this.tabHTML.Padding = new System.Windows.Forms.Padding(3);
-            this.tabHTML.Size = new System.Drawing.Size(784, 359);
+            this.tabHTML.Size = new System.Drawing.Size(784, 366);
             this.tabHTML.TabIndex = 1;
             this.tabHTML.Text = "HTML";
             this.tabHTML.UseVisualStyleBackColor = true;

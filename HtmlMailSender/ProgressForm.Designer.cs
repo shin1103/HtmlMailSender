@@ -30,6 +30,7 @@
         {
             this._progressBar = new System.Windows.Forms.ProgressBar();
             this._worker = new System.ComponentModel.BackgroundWorker();
+            this.lblMessage = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // _progressBar
@@ -43,23 +44,34 @@
             // 
             this._worker.WorkerReportsProgress = true;
             this._worker.DoWork += new System.ComponentModel.DoWorkEventHandler(this._worker_DoWork);
-            this._worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this._worker_RunWorkerCompleted);
             this._worker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this._worker_ProgressChanged);
+            this._worker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this._worker_RunWorkerCompleted);
+            // 
+            // lblMessage
+            // 
+            this.lblMessage.AutoSize = true;
+            this.lblMessage.Location = new System.Drawing.Point(12, 9);
+            this.lblMessage.Name = "lblMessage";
+            this.lblMessage.Size = new System.Drawing.Size(0, 12);
+            this.lblMessage.TabIndex = 1;
             // 
             // ProgressForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(380, 100);
+            this.ControlBox = false;
+            this.Controls.Add(this.lblMessage);
             this.Controls.Add(this._progressBar);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ProgressForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "メール送信中";
-            this.Load += new System.EventHandler(this.ProgressForm_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ProgressForm_FormClosing);
+            this.Load += new System.EventHandler(this.ProgressForm_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -67,5 +79,6 @@
 
         private System.Windows.Forms.ProgressBar _progressBar;
         private System.ComponentModel.BackgroundWorker _worker;
+        private System.Windows.Forms.Label lblMessage;
     }
 }

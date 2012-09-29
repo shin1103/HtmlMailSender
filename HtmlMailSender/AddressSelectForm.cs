@@ -316,39 +316,56 @@ namespace SHashiba.HtmlMailSender
         /// <summary>
         /// OutLookのアドレス帳を読み込む
         /// </summary>
+        /// <remarks>COMが見つからずWindows7では使えないためコメントアウト</remarks>
         /// <returns></returns>
         private Address_DS ReadOutLook()
         {
             Address_DS ads = new Address_DS();
             return ads;
-            //Outlook._Application oApp = new Outlook.Application();          //OutLookアプリケーション
-            //Outlook.NameSpace oNameSpace = oApp.Session;                    //OutLookセッション
-            //Outlook.AddressLists oAddrLists = oNameSpace.AddressLists;      //OutLookアドレスリスト
 
-            ////アドレスリストはおそらくアドレスのディレクトリ単位である。
-            ////そのディレクトリを１つずつ見ていく。
-            //foreach (Outlook.AddressList list in oAddrLists)
+            
+            //Outlook.Application outlook = null;
+            //Outlook.NameSpace nameSpace = null;
+            //Outlook.AddressLists addressList = null;
+            //try
             //{
-            //    //Entry１つ１つが実際のアドレスに相当する。
-            //    //これらの内容を取得し、データセットに格納する。
-            //    foreach (Outlook.AddressEntry oEntry in list.AddressEntries)
+            //    outlook = new Outlook.Application();
+            //    nameSpace = outlook.Session;
+            //    addressList = nameSpace.AddressLists;
+
+            //    //アドレスリストはおそらくアドレスのディレクトリ単位である。
+            //    //そのディレクトリを１つずつ見ていく。
+            //    foreach (Outlook.AddressList list in addressList)
             //    {
-            //        //NULLや空文字列・すでに取り込まれた行を取り込まない。
-            //        if ((string.IsNullOrEmpty(oEntry.Address) == false) && (ads.Address.FindByMailAddress(oEntry.Address) == null))
+            //        //Entry１つ１つが実際のアドレスに相当する。
+            //        //これらの内容を取得し、データセットに格納する。
+            //        foreach (Outlook.AddressEntry oEntry in list.AddressEntries)
             //        {
-            //            Address_DS.AddressRow aRow = ads.Address.NewAddressRow();
-            //            aRow.MailAddress = oEntry.Address ;
-            //            ads.Address.AddAddressRow(aRow);
+            //            //NULLや空文字列・すでに取り込まれた行を取り込まない。
+            //            if ((string.IsNullOrEmpty(oEntry.Address) == false) && (ads.Address.FindByMailAddress(oEntry.Address) == null))
+            //            {
+            //                Address_DS.AddressRow aRow = ads.Address.NewAddressRow();
+            //                aRow.MailAddress = oEntry.Address;
+            //                ads.Address.AddAddressRow(aRow);
+            //            }
             //        }
             //    }
             //}
-
-            //oAddrLists = null;
-            //oNameSpace = null;
-            //oApp.Quit();
-            //oApp = null;
-
-            //return ads;
+            //finally
+            //{
+            //    if (addressList != null)
+            //    {
+            //        System.Runtime.InteropServices.Marshal.ReleaseComObject(addressList);
+            //    }
+            //    if (nameSpace != null)
+            //    {
+            //        System.Runtime.InteropServices.Marshal.ReleaseComObject(nameSpace);
+            //    }
+            //    if (outlook != null)
+            //    {
+            //        System.Runtime.InteropServices.Marshal.ReleaseComObject(outlook);
+            //    }
+            //}
         }
 
         #endregion
@@ -416,6 +433,12 @@ namespace SHashiba.HtmlMailSender
             {
                 f.ShowDialog();
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //OutLookのアドレス帳データを読み取る
+            this._addressds.Merge(ReadOutLook());
         }
 
    }

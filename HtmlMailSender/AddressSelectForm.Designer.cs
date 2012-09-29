@@ -39,12 +39,12 @@
             this.menuMain = new System.Windows.Forms.MenuStrip();
             this.menuItemAction = new System.Windows.Forms.ToolStripMenuItem();
             this.menuClear = new System.Windows.Forms.ToolStripMenuItem();
-            this.openFileExcel = new System.Windows.Forms.OpenFileDialog();
-            this.openFileCSV = new System.Windows.Forms.OpenFileDialog();
             this.gridAddress = new System.Windows.Forms.DataGridView();
             this.mailAddressDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDelete = new System.Windows.Forms.DataGridViewButtonColumn();
             this._addressds = new SHashiba.HtmlMailSender.DataSet.Address_DS();
+            this.openFileExcel = new System.Windows.Forms.OpenFileDialog();
+            this.openFileCSV = new System.Windows.Forms.OpenFileDialog();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -175,14 +175,6 @@
             this.menuClear.Text = "メールアドレスクリア(&C)";
             this.menuClear.Click += new System.EventHandler(this.menuClear_Click);
             // 
-            // openFileExcel
-            // 
-            this.openFileExcel.Filter = "Excelファイル|*.xls|すべてのファイル|*.*";
-            // 
-            // openFileCSV
-            // 
-            this.openFileCSV.Filter = "CSVファイル|*.csv|すべてのファイル|*.*";
-            // 
             // gridAddress
             // 
             this.gridAddress.AllowUserToAddRows = false;
@@ -226,6 +218,14 @@
             this._addressds.DataSetName = "Address_DS";
             this._addressds.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
+            // openFileExcel
+            // 
+            this.openFileExcel.Filter = "Excelファイル|*.xls|すべてのファイル|*.*";
+            // 
+            // openFileCSV
+            // 
+            this.openFileCSV.Filter = "CSVファイル|*.csv|すべてのファイル|*.*";
+            // 
             // AddressSelectForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -240,8 +240,8 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "送信先選択";
-            this.Load += new System.EventHandler(this.AddressSelectForm_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AddressSelectForm_FormClosing);
+            this.Load += new System.EventHandler(this.AddressSelectForm_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
