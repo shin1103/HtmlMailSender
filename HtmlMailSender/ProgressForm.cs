@@ -23,7 +23,7 @@ namespace SHashiba.HtmlMailSender
         private string _mailBody = null;
         private LogWriter _writer = MyAppContext._writer;
 
-        private bool _isAccountError = false;
+        //private bool _isAccountError = false;
 
         public ProgressForm(Account_DS.AccountRow accountRow, Address_DS addressDs, string mailSubject, string mailBody)
         {
@@ -53,8 +53,154 @@ namespace SHashiba.HtmlMailSender
 
         private void _worker_DoWork(object sender, DoWorkEventArgs e)
         {
-                        //送信アカウント情報を取得
+            //送信アカウント情報を取得
             Account_DS.AccountRow accountRow = e.Argument as Account_DS.AccountRow;
+
+            int counter = 0;
+            int clusterCounter = 0;
+            Address_DS.AddressDataTable dsAddress = new Address_DS.AddressDataTable();
+            for (int i = 0; i <= this._addressDs.Address.Count - 1;i++ )
+            {
+                dsAddress.ImportRow(this._addressDs.Address[i]);
+                counter += 1;
+
+                //クラスタサイズに達し、すべてのアドレスの読み込みが終わっていなければメールを送信し、次の送信を待つ。
+                if (counter == HtmlMailSender.Properties.Settings.Default.ClusterSize && (i != (this._addressDs.Address.Count - 1)))
+                {
+                    if (!SendMail(accountRow, dsAddress))
+                    {
+                        e.Result = false;
+                        return;
+                    }
+
+                    //カウンタ関係を初期化
+                    counter = 0;
+                    clusterCounter += 1;
+                    dsAddress.Clear();
+
+                    //一定期間を停止
+                    this._writer.Write(clusterCounter.ToString());
+                    int sentNumber = clusterCounter * HtmlMailSender.Properties.Settings.Default.ClusterSize;
+                    this._writer.Write(sentNumber.ToString());
+                    double percentage =100*  sentNumber / this._addressDs.Address.Count;
+                    this._writer.Write(percentage.ToString());
+                    this._writer.Write(((int)System.Math.Ceiling(percentage)).ToString());
+                    this._worker.ReportProgress((int)System.Math.Ceiling(percentage), new object[] { sentNumber });
+                    this._writer.Write(string.Format("インターバルで停止中です。"));
+                    this._writer.Flush();
+                    System.Threading.Thread.Sleep((int)(HtmlMailSender.Properties.Settings.Default.Interval * 1000));
+
+                }
+                else if(i == this._addressDs.Address.Count - 1)
+                {
+                    //すべての読み込みが終わった場合は送信のみ行う。
+                    if (!SendMail(accountRow, dsAddress))
+                    {
+                        e.Result = false;
+                        return;
+                    }
+                }
+
+            }
+
+            e.Result = true;
+            #region
+            //            //送信アカウント情報を取得
+            //Account_DS.AccountRow accountRow = e.Argument as Account_DS.AccountRow;
+
+            ////POP  Before SMTPの場合
+            //if (accountRow.UsePopBeforeSmtp == true)
+            //{
+            //    this.DoPopBeforeSMTP(accountRow);
+            //}
+
+            ////SMTPクライアントの作成
+            //TKMP.Net.SmtpClient smtp = this.CreateSMTPClient(accountRow);
+
+            ////接続に失敗したら、終了。
+            //if (!smtp.Connect())
+            //{
+            //    System.Windows.Forms.MessageBox.Show("インターネット接続に失敗しました。インターネットに接続していないか、アカウント情報が間違っています。");
+            //    this._isAccountError = true;
+            //    return;
+            //}
+
+            //try
+            //{
+            //    //TODO 決まった件数をまとめてメール送信する。
+            //    //TODO メール送信後、一度接続を解除する。
+
+
+            //    //メール送信を開始
+
+            //    smtp.MessageReceive += new TKMP.Net.MessageReceiveHandler(smtp_MessageReceive);
+            //    smtp.MessageSend += new TKMP.Net.MessageSendHandler(smtp_MessageSend);
+
+            //    //あて先アドレスをセット
+            //    int totalCount = 0;
+            //    int clusterCount = 0;
+            //    foreach (Address_DS.AddressRow adder in this._addressDs.Address)
+            //    {
+            //        clusterCount ++;
+            //        totalCount++;
+
+            //        //メールオブジェクトの作成
+            //        TKMP.Writer.MailWriter mail = new TKMP.Writer.MailWriter();
+
+            //        //SMTPサーバーの問い合わせ用のアドレスをセット
+            //        mail.FromAddress = accountRow.SmtpSenderMail;
+            //        mail.ToAddressList.Add(adder.MailAddress);
+
+            //        //Toにメーラーに表示させるにはこの行を追加
+            //        //mail.Headers.Add("To", adder.MailAddress);
+
+            //        //本文の作成。（HTMLとして認識）
+            //        this.CreateMailBody(mail);
+
+            //        //ヘッダ情報を追加
+            //        this.CreateMailHeader(mail, accountRow);
+
+            //        smtp.SendMail(mail);
+
+            //        this._writer.Write(string.Format("{0}にメールを送信しました。", adder.MailAddress));
+            //        double percentage = ((double)totalCount / (double)this._addressDs.Address.Count) * 100;
+
+            //        if (clusterCount == HtmlMailSender.Properties.Settings.Default.ClusterSize)
+            //        {
+            //            //クラスタサイズに達した場合はいったんとめる。
+            //            this._worker.ReportProgress((int)System.Math.Ceiling(percentage), new object[] { totalCount, true });
+            //            this._writer.Write(string.Format("インターバルで停止中です。"));
+            //            this._writer.Flush();
+            //            System.Threading.Thread.Sleep((int)(HtmlMailSender.Properties.Settings.Default.Interval * 1000));
+            //            clusterCount = 0;
+            //        }
+            //        else
+            //        {
+            //            //それ以外は情報のみを返す。
+            //            this._worker.ReportProgress((int)System.Math.Ceiling(percentage), new object[] { totalCount, false });
+            //        }
+
+            //    }
+            //}
+            //finally
+            //{
+            //    //サーバーから切断
+            //    smtp.Close();
+            //    this._writer.Dispose();
+            //}
+            #endregion
+        }
+
+        /// <summary>
+        /// 引数のアカウントで引数のメールアドレスに対してメールを送信する。
+        /// </summary>
+        /// <param name="accountRow">アカウント</param>
+        /// <param name="address">メールアドレス</param>
+        /// <returns>成功すればTrue、送信に失敗すればFalseを返す。</returns>
+        private bool SendMail(Account_DS.AccountRow accountRow,Address_DS.AddressDataTable address)
+        {
+            //０件の場合は何もせずに終了。
+            if (address.Count == 0) return true;
 
             //POP  Before SMTPの場合
             if (accountRow.UsePopBeforeSmtp == true)
@@ -68,63 +214,46 @@ namespace SHashiba.HtmlMailSender
             //接続に失敗したら、終了。
             if (!smtp.Connect())
             {
-                System.Windows.Forms.MessageBox.Show("インターネット接続に失敗しました。インターネットに接続していないか、アカウント情報が間違っています。");
-                this._isAccountError = true;
-                return;
+                return false;
             }
 
             try
             {
+                //TODO 決まった件数をまとめてメール送信する。
+                //TODO メール送信後、一度接続を解除する。
+
+
                 //メール送信を開始
 
                 smtp.MessageReceive += new TKMP.Net.MessageReceiveHandler(smtp_MessageReceive);
                 smtp.MessageSend += new TKMP.Net.MessageSendHandler(smtp_MessageSend);
 
                 //あて先アドレスをセット
-                int totalCount = 0;
-                int clusterCount = 0;
-                foreach (Address_DS.AddressRow adder in this._addressDs.Address)
+                //メールオブジェクトの作成
+                TKMP.Writer.MailWriter mail = new TKMP.Writer.MailWriter();
+
+                //SMTPサーバーの問い合わせ用のアドレスをセット
+                mail.FromAddress = accountRow.SmtpSenderMail;
+                foreach (Address_DS.AddressRow adder in address)
                 {
-                    clusterCount ++;
-                    totalCount++;
-
-                    //メールオブジェクトの作成
-                    TKMP.Writer.MailWriter mail = new TKMP.Writer.MailWriter();
-
-                    //SMTPサーバーの問い合わせ用のアドレスをセット
-                    mail.FromAddress = accountRow.SmtpSenderMail;
                     mail.ToAddressList.Add(adder.MailAddress);
-
-                    //Toにメーラーに表示させるにはこの行を追加
-                    //mail.Headers.Add("To", adder.MailAddress);
-
-                    //本文の作成。（HTMLとして認識）
-                    this.CreateMailBody(mail);
-
-                    //ヘッダ情報を追加
-                    this.CreateMailHeader(mail, accountRow);
-
-                    smtp.SendMail(mail);
-
-                    this._writer.Write(string.Format("{0}にメールを送信しました。", adder.MailAddress));
-                    double percentage = ((double)totalCount / (double)this._addressDs.Address.Count) * 100;
-
-                    if (clusterCount == HtmlMailSender.Properties.Settings.Default.ClusterSize)
-                    {
-                        //クラスタサイズに達した場合はいったんとめる。
-                        this._worker.ReportProgress((int)System.Math.Ceiling(percentage), new object[] { totalCount, true });
-                        this._writer.Write(string.Format("インターバルで停止中です。"));
-                        this._writer.Flush();
-                        System.Threading.Thread.Sleep((int)(HtmlMailSender.Properties.Settings.Default.Interval * 1000));
-                        clusterCount = 0;
-                    }
-                    else
-                    {
-                        //それ以外は情報のみを返す。
-                        this._worker.ReportProgress((int)System.Math.Ceiling(percentage), new object[] { totalCount, false });
-                    }
-
                 }
+                //Toにメーラーに表示させるにはこの行を追加
+                //mail.Headers.Add("To", adder.MailAddress);
+
+                //本文の作成。（HTMLとして認識）
+                this.CreateMailBody(mail);
+
+                //ヘッダ情報を追加
+                this.CreateMailHeader(mail, accountRow);
+
+                smtp.SendMail(mail);
+
+                foreach (Address_DS.AddressRow adder in address)
+                {
+                    this._writer.Write(string.Format("{0}にメールを送信しました。", adder.MailAddress));
+                }
+                return true;
             }
             finally
             {
@@ -140,14 +269,7 @@ namespace SHashiba.HtmlMailSender
             {
                 //全体とその件数を表示。クラスター間隔により停止している場合はその旨を表示
                 object[] o = (object[])e.UserState;
-                if ((bool)o[1] == false)
-                {
-                    this.lblMessage.Text = string.Format("{0}/{1}を送信", o[0],this._addressDs.Address.Count);
-                }
-                else
-                {
-                    this.lblMessage.Text = string.Format("{0}/{1}を送信(クラスタ間隔に達したためいったん停止中)", o[0], this._addressDs.Address.Count);
-                }
+                this.lblMessage.Text = string.Format("{0}/{1}を送信(送信停止間隔に達したためいったん停止中)", o[0], this._addressDs.Address.Count);
             }
             
             //プログレスバーに進捗状況を表示
@@ -159,7 +281,7 @@ namespace SHashiba.HtmlMailSender
             //エラーの場合
             if (e.Error != null)
             {
-                MessageBox.Show(this, "メッセージの送信に失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "メッセージの送信に失敗しました。アプリケーションを終了します。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this._writer.Write(e.Error.ToString());
                 Application.Exit();
                 return;
@@ -167,9 +289,10 @@ namespace SHashiba.HtmlMailSender
 
             this._writer.Flush();
 
-            if (this._isAccountError)
+            bool accountResult = (bool)e.Result;
+            if (accountResult == false)
             {
-                this._isAccountError = false;
+                MessageBox.Show(this, "アカウント情報が正しくないため、メッセージの送信に失敗しました。", "警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 this.Close();
                 return;
             }
